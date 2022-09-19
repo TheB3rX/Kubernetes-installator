@@ -5,9 +5,6 @@ sudo hostnamectl set-hostname "k8smaster.example.net"
 echo "Done"
 
 echo "Edit the nodes with the information"
-echo "  192.168.1.173   k8smaster.example.net k8smaster
-        192.168.1.174   k8sworker1.example.net k8sworker1
-        192.168.1.175   k8sworker2.example.net k8sworker2"
 
 
 echo "Disabling swap...."
