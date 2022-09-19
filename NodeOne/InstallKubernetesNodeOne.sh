@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Change Hostname..."
-sudo hostnamectl set-hostname "k8smaster.example.net"
+sudo hostnamectl set-hostname "k8sworker1.example.net" 
 exec bash
 
 echo "Disabling swap...."
@@ -51,25 +51,11 @@ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 echo "Installing Kubernetes components"
 sudo apt update
 sudo apt install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectlx
 
-echo "Initialize Kubernetes cluster with Kubeadm"
-sudo kubeadm init --control-plane-endpoint=k8smaster.example.net
-
-echo "Start interaction with cluster"
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-echo "View cluster and node status"
-kubectl cluster-info
-kubectl get nodes
-
-echo "Install Calico Pod"
-curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
-kubectl apply -f calico.yaml
-kubectl get pods -n kube-system
-kubectl get nodes
+echo "Join Worker node to the cluster"
+sudo kubeadm join k8smaster.example.net:6443 --token vt4ua6.wcma2y8pl4menxh2 \
+   --discovery-token-ca-cert-hash sha256:0494aa7fc6ced8f8e7b20137ec0c5d2699dc5f8e616656932ff9173c94962a36
 
 echo "Test Kubernetes installation"
 kubectl create deployment nginx-app --image=nginx --replicas=2
