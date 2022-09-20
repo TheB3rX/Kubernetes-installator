@@ -1,10 +1,6 @@
 #!/bin/bash
-echo "Change Hostname..."
-sudo hostnamectl set-hostname "k8smaster.example.net"
-
-sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
-
+:'
 sudo tee /etc/modules-load.d/containerd.conf <<EOF
 overlay
 br_netfilter
@@ -61,4 +57,4 @@ kubectl get deployment nginx-app
 kubectl expose deployment nginx-app --type=NodePort --port=80
 
 kubectl get svc nginx-app
-kubectl describe svc nginx-app
+kubectl describe svc nginx-app'
